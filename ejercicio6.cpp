@@ -64,14 +64,14 @@ int main()
 
     int* cartel = capicua(placas, n, cantFinal);
 
+
     for(int i=0; i<cantFinal; i++) {
-        for(int i=0; i<cantFinal; i++) {
-            if(i>0) {
-                cout << " ";
-            }
-            cout << cartel[i];
+        if(i>0) {
+            cout << " ";
         }
+        cout << cartel[i];
     }
+
     cout << endl;
 
     delete[] placas;
