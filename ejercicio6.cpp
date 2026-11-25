@@ -39,7 +39,6 @@ int* capicua(int* placas, int n, int &cantPlacas) {
         }
     }
 
-
     // copia la mitad izquierda al revés para armar la parte derecha
     for(int i=largoMitad-1; i>=0; i--) {
         ret[k++] = ret[i]; 
@@ -50,8 +49,7 @@ int* capicua(int* placas, int n, int &cantPlacas) {
     return ret;
 }
 
-int main()
-{
+int main() {
     int n;
     cin >> n;
 
@@ -63,7 +61,6 @@ int main()
     int cantFinal = 0;
 
     int* cartel = capicua(placas, n, cantFinal);
-
 
     for(int i=0; i<cantFinal; i++) {
         if(i>0) {
