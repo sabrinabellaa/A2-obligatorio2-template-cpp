@@ -27,7 +27,7 @@ Agregamos también explícitamente cuales fueron las ideas del ejercicio 6 y 7.
 ## 2026-11-22 — En conjunto
 - 11:00 - 13:30 Esta idea que habíamos pensado no sirve porque esa tabla solo guarda la mejor satisfacción para cada peso, y no cuántos productos de cada categoría se usaron. Al decidir si tomar un producto no hay forma de saber si ya se llegó al máximo de su categoría. Por ejemplo, en el Input 2 la mochila clásica tomaría las tres bebidas (satisfacción 24), cuando solo se permite una. Por eso hay que agregar a la tabla una dimensión por cada categoría, con cuántos productos de esa categoría se llevan usados (de 0 a Lc). Así la tabla queda de N, W, L0, L1, L2, L3, que coincide con el orden que pide la letra.
 Con esa idea, implementamos la función asado, la tabla de 6 dimensiones guardada en un arreglo de una dimensión (con una función pos que calcula la posición) y la recurrencia de comprar o no comprar cada producto, controlando el peso y el cupo de su categoría. Revisamos el código y lo probamos con Claude, y dan bien los 4 ejemplos de la letra. En el peor caso la tabla ocupa unos 100 MB, que es lo que pide el orden espacial.
-13:35 - 13:45 Leímos el ejercicio 9 y 10 para ya familiarizarnos con ellos y decidir cual haríamos primero. Decidimos que primero haremos el 9.
+- 13:35 - 13:45 Leímos el ejercicio 9 y 10 para ya familiarizarnos con ellos y decidir cual haríamos primero. Decidimos que primero haremos el 9.
 
 ## 2026-11-25 — En conjunto
 - 15:00 - 15:20 Nos fijamos nuevamente si el 8 compilaba y vimos que tenía un error, en el for que rellena el array limites habíamos puesto , en vez de ;. Lo arreglamos, probamos de vuelta y compila.
