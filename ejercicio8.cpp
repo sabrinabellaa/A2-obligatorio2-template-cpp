@@ -67,7 +67,7 @@ int main()
     cin >> n >> w;
 
     int* limites =  new int[4];
-    for(int i=0, i<4, i++) {
+    for(int i=0; i<4; i++) {
         cin >> limites[i];
     }
 
