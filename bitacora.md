@@ -37,6 +37,13 @@ Empezamos con el ejercicio 9, escribimos el main, y en él declaramos la funció
 - 15:20 - 16:00 Realizamos la autoría y la justificación de todos los ejercicios que ya terminamos, el 6, 7 y 8.
 
 ## 2026-11-26 — En conjunto
-5:30 - 8:15 - Primera idea para el ejercicio 9: resolverlo con programación dinámica guardando solo la ronda y si el Pato bailó en el tiro anterior (una tabla de K*2), y en cada tiro de B elegir entre bailar o no bailar.
+5:30 - 7:50 - Primera idea para el ejercicio 9: resolverlo con programación dinámica guardando solo la ronda y si el Pato bailó en el tiro anterior (una tabla de K*2), y en cada tiro de B elegir entre bailar o no bailar.
 Pero no se puede porque, sin saber por cuánto va ganando A, no hay forma de controlar que A nunca quede abajo en el marcador: bailar solo es posible si A va ganando en ese momento, y eso depende de todo lo que pasó antes. Por eso agregamos la ventaja al estado, que va de 0 a K. Así la tabla de memoización queda de (K+1) · (K+1) · 2, que es O(K²) como pide la letra.
 Idea final: una función recursiva con memoización cuyo estado es (ronda, ventaja, bailó antes). En cada ronda patea primero A y, si convierte, la ventaja sube en 1. Después se elige lo mejor entre no bailar (la ventaja no cambia y el próximo baile no va seguido) y bailar, que solo se puede si A va ganando porque B convierte y la ventaja baja en 1; si el Pato bailó en el tiro anterior, suma la mitad de los likes. Cada estado se guarda en la tabla memo[ronda][ventaja][bailoAntes], inicializada en -1 (y no en 0, porque 0 likes es un resultado válido), así cada uno se calcula una sola vez.
+
+## 2026-11-26 — En conjunto
+7:50 - 8:15 Escribimos `maxLikesRec` y `maxLikes` con ese diseño y le pedimos a Claude que las compile y las pruebe con los 5 ejemplos de la letra.
+Bugs: dos errores de tipeo que no dejaban compilar (`venrtaja` en vez de `ventaja`, `pateakdoresA` en vez de `pateadoresA`). Los corregimos.
+Al probar los ejemplos, el Input 4 daba 100 en vez de 95. El bug era que en la rama de bailar no restábamos 1 a la ventaja al llamar recursivamente, aunque nuestro propio comentario ya decía que la ventaja debía bajar al convertir B. Lo corregimos pasando `ventajaDespuesDeA - 1`, y los 5 ejemplos dieron bien.
+También nos faltaba liberar `memo[r]` (el arreglo de punteros intermedio) al borrar la tabla, nos quedaba un leak de memoria. Lo agregamos. Volvims a probar y está todo bien.
+
