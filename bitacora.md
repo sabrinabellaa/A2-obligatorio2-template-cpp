@@ -10,6 +10,8 @@ Primera Idea: usar el merge sort de la diapositiva y contar las remontadas entre
 ## 2026-11-12 — En conjunto
 - 10:00 - 12:00 Hicimos el resto del ejercicio 7, al merge sort visto en clase le agregamos el conteo con dos punteros antes de intercalar, pasamos los tamaños de cada mitad por parámetro (con un puntero sizeof no sirve para saber el tamaño), cuenta por referencia para acumular en todas las llamadas, y delete de las mitades ya intercaladas para que el espacio quede en O(N). También cambiamos en el main que el array de llegada empiece a llenarse desde 0 en vez del 1 y tenga n lugares en vez de n+1. 
 Bug: nos habíamos olvidado del & en `int* intercalar(int *arr1, int n1, int *arr2, int n2, long long& cuenta);` y cuenta nunca se actualizaba. Lo corregimos, volvimos a probar y dio todo bien.
+
+## 2026-11-12 — En conjunto
 - 13:00 - 14:00 Leímos la letra del ejercicio 6, pensamos el plan de como lo vamos a implementar e hicimos el main. 
 Primera Idea: contar cuántas placas hay de cada número y armar la mitad izquierda con los pares de mayor a menor (greedy, para que quede lexicográficamente mayor), poner en el centro el número más grande con cantidad impar y espejar la mitad.
 
@@ -27,19 +29,27 @@ Agregamos también explícitamente cuales fueron las ideas del ejercicio 6 y 7.
 ## 2026-11-22 — En conjunto
 - 11:00 - 13:30 Esta idea que habíamos pensado no sirve porque esa tabla solo guarda la mejor satisfacción para cada peso, y no cuántos productos de cada categoría se usaron. Al decidir si tomar un producto no hay forma de saber si ya se llegó al máximo de su categoría. Por ejemplo, en el Input 2 la mochila clásica tomaría las tres bebidas (satisfacción 24), cuando solo se permite una. Por eso hay que agregar a la tabla una dimensión por cada categoría, con cuántos productos de esa categoría se llevan usados (de 0 a Lc). Así la tabla queda de N, W, L0, L1, L2, L3, que coincide con el orden que pide la letra.
 Con esa idea, implementamos la función asado, la tabla de 6 dimensiones guardada en un arreglo de una dimensión (con una función pos que calcula la posición) y la recurrencia de comprar o no comprar cada producto, controlando el peso y el cupo de su categoría. En el peor caso la tabla ocupa unos 100 MB, que es lo que pide el orden espacial.
+
+## 2026-11-22 — En conjunto
 - 13:35 - 13:45 Leímos el ejercicio 9 y 10 para ya familiarizarnos con ellos y decidir cual haríamos primero. Decidimos que primero haremos el 9.
 
 ## 2026-11-25 — En conjunto
 - 15:00 - 15:20 Nos fijamos nuevamente si el 8 compilaba y vimos que tenía un error, en el for que rellena el array limites habíamos puesto , en vez de ;. Lo arreglamos, probamos de vuelta y compila.
 Empezamos con el ejercicio 9, escribimos el main, y en él declaramos la función `maxLikes(int k, int *pateadoresA, int *likes);` que haremos con memoización.
+
+## 2026-11-25 — En conjunto
 - 15:20 - 16:00 Realizamos la autoría y la justificación de todos los ejercicios que ya terminamos, el 6, 7 y 8.
 
 ## 2026-11-26 — En conjunto
-5:30 - 7:50 - Primera idea para el ejercicio 9: resolverlo con programación dinámica guardando solo la ronda y si el Pato bailó en el tiro anterior (una tabla de K*2), y en cada tiro de B elegir entre bailar o no bailar.
+- 5:30 - 7:50 - Primera idea para el ejercicio 9: resolverlo con programación dinámica guardando solo la ronda y si el Pato bailó en el tiro anterior (una tabla de K*2), y en cada tiro de B elegir entre bailar o no bailar.
 Pero no se puede porque, sin saber por cuánto va ganando A, no hay forma de controlar que A nunca quede abajo en el marcador: bailar solo es posible si A va ganando en ese momento, y eso depende de todo lo que pasó antes. Por eso agregamos la ventaja al estado, que va de 0 a K. Así la tabla de memoización queda de (K+1) · (K+1) · 2, que es O(K²) como pide la letra.
 Idea final: una función recursiva con memoización cuyo estado es (ronda, ventaja, bailó antes). En cada ronda patea primero A y, si convierte, la ventaja sube en 1. Después se elige lo mejor entre no bailar (la ventaja no cambia y el próximo baile no va seguido) y bailar, que solo se puede si A va ganando porque B convierte y la ventaja baja en 1; si el Pato bailó en el tiro anterior, suma la mitad de los likes. Cada estado se guarda en la tabla memo[ronda][ventaja][bailoAntes], inicializada en -1 (y no en 0, porque 0 likes es un resultado válido), así cada uno se calcula una sola vez.
+
+## 2026-11-26 — En conjunto
 - 7:50 - 8:15 Escribimos `maxLikesRec` y `maxLikes` con ese diseño y le pedimos a Claude que las compile y las pruebe con los 5 ejemplos de la letra.
 Bugs: dos errores de tipeo que no dejaban compilar (`venrtaja` en vez de `ventaja`, `pateakdoresA` en vez de `pateadoresA`). Los corregimos.
 Al probar los ejemplos, el Input 4 daba 100 en vez de 95. El bug era que en la rama de bailar no restábamos 1 a la ventaja al llamar recursivamente, aunque nuestro propio comentario ya decía que la ventaja debía bajar al convertir B. Lo corregimos pasando `ventajaDespuesDeA - 1`, y los 5 ejemplos dieron bien.
-También nos faltaba liberar `memo[r]` (el arreglo de punteros intermedio) al borrar la tabla, nos quedaba un leak de memoria. Lo agregamos. Volvims a probar y está todo bien.
+También nos faltaba liberar `memo[r]` (el arreglo de punteros intermedio) al borrar la tabla, nos quedaba un leak de memoria. Lo agregamos. Volvimos a probar y está todo bien.
 
+## 2026-11-26 — En conjunto
+- 14:00 - 15:40 Leimos la letra del ejercicio 10, usamos Claude para entender bien qué pedía e intentamos hacer el main. Como nos pareció más complejo que los demás, hicimos el main a medias con lo que nos fue pareciendo adecuado para la lógica pero sin la intención de que compile. Luego recurrimos a Claude para que nos ayude a razonar cómo hacer que a partir de nuestras ideas iniciales, pudieramos completar el main. También declaramos la función `bt`.
