@@ -32,3 +32,11 @@ Con esa idea, implementamos la función asado, la tabla de 6 dimensiones guardad
 ## 2026-11-25 — En conjunto
 - 15:00 - 15:20 Nos fijamos nuevamente si el 8 compilaba y vimos que tenía un error, en el for que rellena el array limites habíamos puesto , en vez de ;. Lo arreglamos, probamos de vuelta y compila.
 Empezamos con el ejercicio 9, escribimos el main, y en él declaramos la función `maxLikes(int k, int *pateadoresA, int *likes);` que haremos con memoización.
+
+## 2026-11-25 — En conjunto
+- 15:20 - 16:00 Realizamos la autoría y la justificación de todos los ejercicios que ya terminamos, el 6, 7 y 8.
+
+## 2026-11-26 — En conjunto
+5:30 - 8:15 - Primera idea para el ejercicio 9: resolverlo con programación dinámica guardando solo la ronda y si el Pato bailó en el tiro anterior (una tabla de K*2), y en cada tiro de B elegir entre bailar o no bailar.
+Pero no se puede porque, sin saber por cuánto va ganando A, no hay forma de controlar que A nunca quede abajo en el marcador: bailar solo es posible si A va ganando en ese momento, y eso depende de todo lo que pasó antes. Por eso agregamos la ventaja al estado, que va de 0 a K. Así la tabla de memoización queda de (K+1) · (K+1) · 2, que es O(K²) como pide la letra.
+Idea final: una función recursiva con memoización cuyo estado es (ronda, ventaja, bailó antes). En cada ronda patea primero A y, si convierte, la ventaja sube en 1. Después se elige lo mejor entre no bailar (la ventaja no cambia y el próximo baile no va seguido) y bailar, que solo se puede si A va ganando porque B convierte y la ventaja baja en 1; si el Pato bailó en el tiro anterior, suma la mitad de los likes. Cada estado se guarda en la tabla memo[ronda][ventaja][bailoAntes], inicializada en -1 (y no en 0, porque 0 likes es un resultado válido), así cada uno se calcula una sola vez.
