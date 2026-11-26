@@ -67,3 +67,6 @@ En el proceso fueron surgiendo varios errores que corregimos con la ayuda de Cla
 ## 2026-11-26 — En conjunto
 19:15 - 20:00 Compilamos el ejercicio 9 y nos dio todo perfecto. Por otro lado hicimos la revisión de código de todos los ejercicios para asegurarnos que esté todo bien y nos dimos cuenta que utilizamos max y eso no está permitido, por lo que lo cambiamos. 
 Por último escribimos las justificaciones de orden y la autoría del ejercicio 9 y 10, arreglamos faltas de ortografía y redacción.
+
+## 2026-11-26 — En conjunto
+20:05 - 20:15 También escribimos en `justificacion.md` del ejercicio 10 una explicación de las podas que usa `bt`.
