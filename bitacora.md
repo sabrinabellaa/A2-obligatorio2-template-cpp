@@ -53,3 +53,13 @@ También nos faltaba liberar `memo[r]` (el arreglo de punteros intermedio) al bo
 
 ## 2026-11-26 — En conjunto
 - 14:00 - 15:40 Leimos la letra del ejercicio 10, usamos Claude para entender bien qué pedía e intentamos hacer el main. Como nos pareció más complejo que los demás, hicimos el main a medias con lo que nos fue pareciendo adecuado para la lógica pero sin la intención de que compile. Luego recurrimos a Claude para que nos ayude a razonar cómo hacer que a partir de nuestras ideas iniciales, pudieramos completar el main. También declaramos la función `bt`.
+
+## 2026-11-26 — En conjunto
+- 16:00 - 19:00 Ya teníamos la base del main escrita y nuestra primera idea era usar el framework de backtracking de optimización visto en clase, porque puede haber varias soluciones y hay que imprimir la de menor resultado, desempatando por los sumandos. Lo que no sabíamos era cómo recorrer las letras para poder podar. Le pasamos a Claude la presentación de backtracking del curso y le pedimos que nos ayude a razonarlo. Nos explicó, con el ejemplo AB + BA = CC paso a paso, que conviene resolver la suma columna por columna desde las unidades, como una suma a mano con acarreo. Así solo se prueban dígitos en las letras de los sumandos: el dígito del resultado queda obligado a (suma de la columna + acarreo) % 10, y si no coincide con el de la letra se puede cortar la rama sin mirar las columnas siguientes. En base a esto, hicimos `bt` y declaramos las funciones auxiliares. Fuimos mostrándole nuestro proceso a Claude y fuimos razonando y mandándole nuestras ideas para que nos ayude a ordenarlas. Por último, programamos las funciones auxiliares. 
+En el proceso fueron surgiendo varios errores que corregimos con la ayuda de Claude:
+-- Inicialmente nos faltó la función `deshacerMovimiento` después de cada cada recursión de `aplicarMovimiento`, lo que hacía que las letras queden con dígitos de ramas anteriores y aparece "imposible" donde había solución.
+-- Cuando llamamos a `bt`, al parámetro de `sumaCol` no le estábamos pasando 0, si no que `sumaCol`, lo que hacía que las sumas de todas las columnas se vayan arrastrando.
+-- En el caso base de `bt` no estábamos chequeando que acarreo == 0 y se aceptaban sumas que se "pasan".
+-- `letraEn` retornaba palabra[col] y la palabra se recorria al revés. Lo cambiamos para que retorne palabra[palabra.length() - 1 - col] para que se recorra en orden.
+-- Cada vez que usábamos una letra como índice de `valor` o de `noCero` nos faltaba restar 'A' para convertir cada letra en una posición de 0 a 25.
+-- `hayMejor` no se pasaba por referencia (&) y no se actualizaba.

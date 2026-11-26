@@ -5,8 +5,123 @@
 
 using namespace std;
 
-void bt(string* palabras, int K, int col, int fila, int acarreo, int sumaCol, int* valor, bool* usado, bool* noCero, long long* mejor, bool& hayMejor) {
+// devuelve la letra de la palabra en esa columna (columna 0 = la última letra), o ' ' si la palabra es más corta
+char letraEn(string palabra, int col) {
+    if(col >= (int)palabra.length()) {
+        return ' ';
+    }
+    return palabra[palabra.length() - 1 - col];
+}
 
+// número que forma la palabra con los dígitos asignados (long long: 10 cifras no entran en un int)
+long long valorPalabra(string palabra, int* valor) {
+    long long num = 0;
+    for(int i=0; i<(int)palabra.length(); i++) {
+        num = num * 10 + valor[palabra[i] - 'A'];
+    }
+    return num;
+}
+
+// se terminaron las columnas del resultado
+bool esSolucion(int col, int largoRes) {
+    return col == largoRes;
+}
+
+// el dígito no lo usa otra letra y no es un 0 al principio de una palabra de más de una letra
+bool puedoAplicarMovimiento(char letra, int d, bool* usado, bool* noCero) {
+    return !usado[d] && !(d == 0 && noCero[letra - 'A']);
+}
+
+void aplicarMovimiento(char letra, int d, int* valor, bool* usado) {
+    valor[letra - 'A'] = d;
+    usado[d] = true;
+}
+
+void deshacerMovimiento(char letra, int* valor, bool* usado) {
+    usado[valor[letra - 'A']] = false;
+    valor[letra - 'A'] = -1;
+}
+
+// cand y mejor: [0] = resultado, [1..K] = sumandos. Gana el menor resultado; si empatan, el menor primer sumando, y así.
+bool esMejorSolucion(long long* cand, long long* mejor, int K) {
+    for(int i=0; i<=K; i++) {
+        if(cand[i] != mejor[i]) {
+            return cand[i] < mejor[i];
+        }
+    }
+    return false; // son iguales
+}
+
+// PODA: estamos en la casilla del resultado y la columna no puede cerrar.
+// El dígito del resultado queda obligado a (suma de la columna + acarreo) % 10.
+// Si la letra ya tiene otro dígito, o ese dígito no se le puede asignar, ninguna
+// asignación de las columnas siguientes puede arreglarlo, así que se corta la rama.
+bool puedoPodar(string* palabras, int K, int col, int fila, int acarreo, int sumaCol, int* valor, bool* usado, bool* noCero) {
+    if(fila != K || col >= (int)palabras[K].length()) {
+        return false; // solo se poda en la casilla del resultado
+    }
+    int digito = (sumaCol + acarreo) % 10;
+    char letra = letraEn(palabras[K], col);
+    if(valor[letra - 'A'] != -1) {
+        return valor[letra - 'A'] != digito;
+    }
+    return !puedoAplicarMovimiento(letra, digito, usado, noCero);
+}
+
+// recorre la suma casilla por casilla: columna por columna desde las unidades, y en cada columna los sumandos de arriba hacia abajo y al final el resultado
+void bt(string* palabras, int K, int col, int fila, int acarreo, int sumaCol, int* valor, bool* usado, bool* noCero, long long* mejor, bool& hayMejor) {
+    if(!puedoPodar(palabras, K, col, fila, acarreo, sumaCol, valor, usado, noCero)) {
+        if(esSolucion(col, palabras[K].length())) {
+            // solo es solución si no sobra acarreo
+            if(acarreo == 0) {
+                long long* cand = new long long[K + 1];
+                cand[0] = valorPalabra(palabras[K], valor);
+                for(int i=0; i<K; i++) {
+                    cand[i + 1] = valorPalabra(palabras[i], valor);
+                }
+                if(!hayMejor || esMejorSolucion(cand, mejor, K)) {
+                    for(int i=0; i<=K; i++) {
+                        mejor[i] = cand[i];
+                    }
+                    hayMejor = true;
+                }
+                delete[] cand;
+            }
+        } else if(fila < K) {
+            // casilla de un sumando
+            char letra = letraEn(palabras[fila], col);
+            if(letra == ' ') {
+                // la palabra es más corta: no tiene letra en esta columna
+                bt(palabras, K, col, fila + 1, acarreo, sumaCol, valor, usado, noCero, mejor, hayMejor);
+            } else if(valor[letra - 'A'] != -1) {
+                // la letra ya tiene dígito: solo se suma
+                bt(palabras, K, col, fila + 1, acarreo, sumaCol + valor[letra - 'A'], valor, usado, noCero, mejor, hayMejor);
+            } else {
+                // la letra no tiene dígito: se prueban del 0 al 9
+                for(int d=0; d<=9; d++) {
+                    if(puedoAplicarMovimiento(letra, d, usado, noCero)) {
+                        aplicarMovimiento(letra, d, valor, usado);
+                        bt(palabras, K, col, fila + 1, acarreo, sumaCol + d, valor, usado, noCero, mejor, hayMejor);
+                        deshacerMovimiento(letra, valor, usado);
+                    }
+                }
+            }
+        } else {
+            // casilla del resultado: como no se podó, el dígito calculado es válido
+            int total = sumaCol + acarreo;
+            int digito = total % 10;
+            int nuevoAcarreo = total / 10;
+            char letra = letraEn(palabras[K], col);
+            if(valor[letra - 'A'] != -1) {
+                // ya tenía ese mismo dígito: se sigue con la próxima columna
+                bt(palabras, K, col + 1, 0, nuevoAcarreo, 0, valor, usado, noCero, mejor, hayMejor);
+            } else {
+                aplicarMovimiento(letra, digito, valor, usado);
+                bt(palabras, K, col + 1, 0, nuevoAcarreo, 0, valor, usado, noCero, mejor, hayMejor);
+                deshacerMovimiento(letra, valor, usado);
+            }
+        }
+    }
 }
 
 int main()
