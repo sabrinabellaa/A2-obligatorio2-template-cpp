@@ -35,7 +35,11 @@ int maxLikesRec(int ronda, int ventaja, int bailoAntes, int k, int *pateadoresA,
             likesBaile = likes[ronda] / 2; // baile seguido: la mitad, redondeado para abajo
         }
         int bailar = likesBaile + maxLikesRec(ronda + 1, ventajaDespuesDeA - 1, 1, k, pateadoresA, likes, memo);
-        memo[ronda][ventaja][bailoAntes] = max(noBailar, bailar);
+        if(bailar > noBailar) {
+            memo[ronda][ventaja][bailoAntes] = bailar;
+        } else {
+            memo[ronda][ventaja][bailoAntes] = noBailar;
+        }
     }
 
     return memo[ronda][ventaja][bailoAntes];
